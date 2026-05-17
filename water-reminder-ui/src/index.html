@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    :root { font-family: "Segoe UI", sans-serif; }
+    body { background: #f0f4f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 300px; text-align: center; }
+    h2 { color: #2c3e50; margin-bottom: 1.5rem; }
+    .input-group { margin-bottom: 1.5rem; text-align: left; }
+    label { font-size: 0.9rem; color: #7f8c8d; }
+    input { width: 100%; padding: 10px; margin-top: 5px; border: 2px solid #ecf0f1; border-radius: 8px; box-sizing: border-box; outline: none; }
+    input:focus { border-color: #3498db; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: 0.3s; }
+    .btn-start { background: #3498db; color: white; }
+    .btn-start:hover { background: #2980b9; }
+    .btn-stop { background: #e74c3c; color: white; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>💧 喝水助手</h2>
+    <div class="input-group">
+      <label>提醒间隔 (分钟)</label>
+      <input type="number" id="minutes" value="40" min="1">
+    </div>
+    <button id="toggleBtn" class="btn-start">开始提醒</button>
+  </div>
+
+  <script>
+    // 注意：Tauri 2.0 使用 window.__TAURI__.core
+    const { invoke } = window.__TAURI__.core;
+    const btn = document.getElementById('toggleBtn');
+    const input = document.getElementById('minutes');
+    let isRunning = false;
+
+    btn.addEventListener('click', async () => {
+      isRunning = !isRunning;
+      const mins = parseInt(input.value);
+
+      // 调用 Rust 后端命令
+      await invoke('toggle_reminder', { enabled: isRunning, minutes: mins });
+
+      if (isRunning) {
+        btn.textContent = '停止提醒';
+        btn.className = 'btn-stop';
+        input.disabled = true;
+      } else {
+        btn.textContent = '开始提醒';
+        btn.className = 'btn-start';
+        input.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

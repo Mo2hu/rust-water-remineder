@@ -1,0 +1,14 @@
+[package]
+name = "water_reminder"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# 用于发送系统通知
+notify-rust = "4.11"
+# 用于处理定时任务
+cron = "0.12"
+# 用于处理时间
+chrono = "0.4"
+# 用于让程序保持运行
+tokio = { version = "1", features = ["full"] }
